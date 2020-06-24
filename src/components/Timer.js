@@ -7,15 +7,26 @@ import { AppContext } from '../context/AppContext';
 export default function Timer(props) { 
     const [state, setContext] = useContext(AppContext);
     const elapsedString = millisecondsToHuman(props.elapsed);
-    function handleEdit(list, id) {
-        const obj = list.find(o => o.id === id);
+    function handleEdit() {
+        const list = [...state.projectList],
+              obj = list.find(o => o.id === props.id);
         obj.isEditing = true;
         for (let i = 0; i < list.length; i++) {
-            if (list.id === id) {
+            if (list[i].id === props.id) {
                 list.splice(i, 1, obj);
             }
         }
         setContext(state => ({...state, projectList: list}));
+    }
+    function handleDelete() {
+        const list = [...state.projectList];
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].id === props.id) {
+                list.splice(i, 1);
+            }
+        }
+        const count = list.length;
+        setContext(state => ({...state, projectList: list, count: count}));
     }
     return (
         <View style={styles.timerContainer}>
@@ -23,8 +34,8 @@ export default function Timer(props) {
             <Text>{props.project}</Text>
             <Text style={styles.elapsedTime}>{elapsedString}</Text> 
             <View style={styles.buttonGroup}>
-                <TimerButton color="blue" small title="Edit" onPress={() => handleEdit(state.projectList, props.id)} />
-                <TimerButton color="blue" small title="Remove" /> 
+                <TimerButton color="blue" small title="Edit" onPress={handleEdit} />
+                <TimerButton color="blue" small title="Remove" onPress={handleDelete}/> 
             </View>
             <TimerButton color="#21BA45" title="Start" /> 
         </View>

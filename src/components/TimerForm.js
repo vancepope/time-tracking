@@ -5,12 +5,11 @@ import { AppContext } from '../context/AppContext';
 
 export default function TimerForm(props) {
     const [state, setContext] = useContext(AppContext);
-    const [id, setId] = useState(0);
     const [title, setTitle] = useState('');
     const [project, setProject] = useState('');
     const submitText = (handleText() === true) ? 'Update' : 'Create';
     function handleText() {
-        const { projectList, count } = state;
+        const { projectList } = state;
         const idExists = checkIdExists(projectList, props.id);
         if (idExists) {
             return true;
@@ -25,18 +24,25 @@ export default function TimerForm(props) {
         return false;
     }
     function handleSubmit() {
-        const newList = [...state.projectList],
+        const newList = [...state.projectList];
               index = state.count + 1,
               idExists = checkIdExists(state.projectList, props.id);
         
         if (idExists) {
-            const list = updateList(newList, props.id)
+            const list = updateList(state.projectList, props.id)
             setContext(state => ({...state, projectList: list, isOpen: false }));
         } else {
-            setId(index);
             newList.push({ id: index, title: title, project: project, isRunning: false, elapsed: 0, isEditing: false });
             setContext(state => ({...state, projectList: newList, count: index, isOpen: false}));
         }
+    }
+    function handleCancel() {
+        const list = updateList(state.projectList, props.id);
+        if (state.isOpen) {
+            setContext(state => ({...state, isOpen: false}))
+            return;
+        } 
+        setContext(state => ({...state, projectList: list}));
     }
     function updateList(list, id) {
         let updatedItem = {
@@ -54,18 +60,6 @@ export default function TimerForm(props) {
         }
 
         return list;
-    }
-    function handleCancel() {
-        const projects = [...state.projectList]
-        const list = updateList(projects, props.id);
-        if (state.isOpen) {
-            setId(0);
-            setProject('');
-            setTitle('');
-            setContext(state => ({...state, isOpen: false}))
-            return;
-        } 
-        setContext(state => ({...state, projectList: list}));
     }
 
     return (
