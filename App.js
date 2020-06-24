@@ -1,19 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import EditableTimer from './src/components/EditableTimer';
-import ToggleableTimerForm from './src/components/ToggleableTimerForm';
+import { StyleSheet } from 'react-native';
+import Home from './src/components/Home';
+import { AppProvider } from './src/context/AppContext';
 
-export default function App() {
+export default function App(props) {
   return (
-    <View style={styles.appContainer}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Timers</Text>
-      </View>
-      <ScrollView style={styles.timerList}>
-        <ToggleableTimerForm isOpen={false} />
-        <EditableTimer />
-      </ScrollView>
-    </View>
+    <AppProvider>
+      <Home {...props} />
+    </AppProvider>
   );
 }
 

@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import TimerForm from './TimerForm';
 import Timer from './Timer';
+import { AppContext } from '../context/AppContext';
 
-export default function EditableTimer({id, title, project, elapsed, isRunning, editForOpen}) {
-    if (editForOpen) {
+export default function EditableTimer(props) {
+
+    if (props.isEditing) {
         return <TimerForm 
-                    id={id} 
-                    title={title}
-                    project={project}
+                    id={props.id}
+                    title={props.title}
+                    project={props.project}
+                    elapsed={props.elapsed}
+                    isRunning={props.isRunning}
+                    isEditing={props.isEditing}
                />;
     }
     return (
         <Timer 
-            id={id}
-            title={title}
-            project={project}
-            elapsed={elapsed}
-            isRunning={isRunning}
+            id={props.id}
+            title={props.title}
+            project={props.project}
+            elapsed={props.elapsed}
+            isRunning={props.isRunning}
+            isEditing={props.isEditing}
         />
     );
 }

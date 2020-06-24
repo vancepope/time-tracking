@@ -1,9 +1,73 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, View, Text, TextInput } from 'react-native';
 import TimerButton from './TimerButton';
+import { AppContext } from '../context/AppContext';
 
-export default function TimerForm({ id, title, project }) {
-    const submitText = id ? 'Update' : 'Create';
+export default function TimerForm(props) {
+    const [state, setContext] = useContext(AppContext);
+    const [id, setId] = useState(0);
+    const [title, setTitle] = useState('');
+    const [project, setProject] = useState('');
+    const submitText = (handleText() === true) ? 'Update' : 'Create';
+    function handleText() {
+        const { projectList, count } = state;
+        const idExists = checkIdExists(projectList, props.id);
+        if (idExists) {
+            return true;
+        }
+        return false;
+    }
+    function checkIdExists(list, id) {
+        const obj = list.find(o => o.id === id);
+        if (obj !== undefined) {
+            return true;
+        }
+        return false;
+    }
+    function handleSubmit() {
+        const newList = [...state.projectList],
+              index = state.count + 1,
+              idExists = checkIdExists(state.projectList, props.id);
+        
+        if (idExists) {
+            const list = updateList(newList, props.id)
+            setContext(state => ({...state, projectList: list, isOpen: false }));
+        } else {
+            setId(index);
+            newList.push({ id: index, title: title, project: project, isRunning: false, elapsed: 0, isEditing: false });
+            setContext(state => ({...state, projectList: newList, count: index, isOpen: false}));
+        }
+    }
+    function updateList(list, id) {
+        let updatedItem = {
+            id: id,
+            title: (title === '') ? props.title : title,
+            project: (project === '') ? props.project : project,
+            isRunning: false,
+            elapsed: 0,
+            isEditing: false,
+        };
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].id === id) {
+                list.splice(i, 1, updatedItem);
+            }
+        }
+
+        return list;
+    }
+    function handleCancel() {
+        const projects = [...state.projectList]
+        const list = updateList(projects, props.id);
+        if (state.isOpen) {
+            setId(0);
+            setProject('');
+            setTitle('');
+            setContext(state => ({...state, isOpen: false}))
+            return;
+        } 
+        setContext(state => ({...state, projectList: list}));
+    }
+
     return (
         <View style={styles.formContainer}>
             <View style={styles.attributeContainer}>
@@ -12,7 +76,8 @@ export default function TimerForm({ id, title, project }) {
                     <TextInput
                         style={styles.textInput} 
                         underlineColorAndroid="transparent" 
-                        defaultValue={title}
+                        defaultValue={props.title}
+                        onChangeText={value => setTitle(value)}
                     /> 
                 </View>
             </View>
@@ -22,13 +87,14 @@ export default function TimerForm({ id, title, project }) {
                     <TextInput
                         style={styles.textInput} 
                         underlineColorAndroid="transparent" 
-                        defaultValue={project}
+                        defaultValue={props.project}
+                        onChangeText={value => setProject(value)}
                     /> 
                 </View>
             </View>
             <View style={styles.buttonGroup}>
-                <TimerButton small color="#21BA45" title={submitText} />
-                <TimerButton small color="#DB2828" title="Cancel" /> 
+                <TimerButton small color="#21BA45" title={submitText} onPress={handleSubmit} />
+                <TimerButton small color="#DB2828" title="Cancel" onPress={handleCancel} /> 
             </View>
         </View> 
     );

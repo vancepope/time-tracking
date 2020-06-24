@@ -1,5 +1,6 @@
-import{StyleSheet,Text,TouchableOpacity}from'react-native'; 
-import React from'react';
+import{StyleSheet,Text,TouchableOpacity} from 'react-native'; 
+import React from 'react';
+
 export default function TimerButton({ color, title, small, onPress }) { 
     return (
         <TouchableOpacity
@@ -14,6 +15,7 @@ export default function TimerButton({ color, title, small, onPress }) {
         </TouchableOpacity>
     ); 
 }
+
 const styles = StyleSheet.create({ 
     button: {
         marginTop: 10,
