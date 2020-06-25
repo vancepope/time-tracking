@@ -49,8 +49,8 @@ export default function TimerForm(props) {
             id: id,
             title: (title === '') ? props.title : title,
             project: (project === '') ? props.project : project,
-            isRunning: false,
-            elapsed: 0,
+            isRunning: props.isRunning,
+            elapsed: props.elapsed,
             isEditing: false,
         };
         for (let i = 0; i < list.length; i++) {

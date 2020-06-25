@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { millisecondsToHuman } from '../../utils/TimerUtils'; 
 import TimerButton from './TimerButton';
@@ -7,6 +7,7 @@ import { AppContext } from '../context/AppContext';
 export default function Timer(props) { 
     const [state, setContext] = useContext(AppContext);
     const elapsedString = millisecondsToHuman(props.elapsed);
+     
     function handleEdit() {
         const list = [...state.projectList],
               obj = list.find(o => o.id === props.id);
@@ -28,6 +29,37 @@ export default function Timer(props) {
         const count = list.length;
         setContext(state => ({...state, projectList: list, count: count}));
     }
+    function toggleTimer() {
+        const list = [...state.projectList];
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].id === props.id) {
+                list[i].isRunning = !list[i].isRunning;
+                setContext(state => ({...state, projectList: list}));
+                startTimer();
+            }
+        } 
+    }
+    function startTimer() {
+        const list = [...state.projectList];
+        let interval = null;
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].id === props.id) {
+                if (list[i].isRunning) {
+                    interval = setInterval(() => {
+                        list[i].elapsed += 1000;
+                        setContext(state => ({...state, projectList: list}))
+                        if (!list[i].isRunning) {
+                            list[i].elapsed -= 1000;
+                            setContext(state => ({...state, projectList: list}))
+                            clearInterval(interval);
+                            return;
+                        }
+                    }, 1000);
+                }
+                return () => clearInterval(interval);
+            }
+        }
+    }
     return (
         <View style={styles.timerContainer}>
             <Text style={styles.title}>{props.title}</Text> 
@@ -37,11 +69,10 @@ export default function Timer(props) {
                 <TimerButton color="blue" small title="Edit" onPress={handleEdit} />
                 <TimerButton color="blue" small title="Remove" onPress={handleDelete}/> 
             </View>
-            <TimerButton color="#21BA45" title="Start" /> 
+            <TimerButton color={props.isRunning ? "red" : "#21BA45"} title={props.isRunning ? "Stop" : "Start" } onPress={toggleTimer}/> 
         </View>
     ); 
 }
-
 const styles = StyleSheet.create({ 
     timerContainer: {
         backgroundColor: 'white', 
