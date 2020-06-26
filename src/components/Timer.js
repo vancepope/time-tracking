@@ -66,10 +66,13 @@ export default function Timer(props) {
             <Text>{props.project}</Text>
             <Text style={styles.elapsedTime}>{elapsedString}</Text> 
             <View style={styles.buttonGroup}>
-                <TimerButton color="blue" small title="Edit" onPress={handleEdit} />
-                <TimerButton color="blue" small title="Remove" onPress={handleDelete}/> 
+                <TimerButton color={props.isRunning ? "grey" : "blue"} small title="Edit" onPress={handleEdit} disabled={props.isRunning} />
+                <TimerButton color={props.isRunning ? "grey" : "blue"} small title="Remove" onPress={handleDelete} disabled={props.isRunning} /> 
             </View>
-            <TimerButton color={props.isRunning ? "red" : "#21BA45"} title={props.isRunning ? "Stop" : "Start" } onPress={toggleTimer}/> 
+            <View style={styles.buttonGroup}>
+                <TimerButton color={props.isRunning ? "grey" : "#21BA45"} title="Start" onPress={toggleTimer} disabled={props.isRunning}/> 
+                <TimerButton color={props.isRunning ? "red" : "gray"} title="Stop" onPress={toggleTimer} disabled={!props.isRunning}/>
+            </View>
         </View>
     ); 
 }

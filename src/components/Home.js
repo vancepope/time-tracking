@@ -4,7 +4,7 @@ import EditableTimer from './EditableTimer';
 import ToggleableTimerForm from './ToggleableTimerForm';
 import { AppContext } from '../context/AppContext';
 
-export default function Home(props) {
+export default function Home() {
     const [state, setContext] = useContext(AppContext);
     return (
         <View style={styles.appContainer}>
@@ -42,11 +42,13 @@ const styles = StyleSheet.create({
     paddingBottom: 15, 
     borderBottomWidth: 1, 
     borderBottomColor: '#D6D7DA',
+    backgroundColor: '#07A6B6',
   }, 
   title: {
     fontSize: 18, 
     fontWeight: 'bold', 
     textAlign: 'center',
+    color: '#fff'
   },
   timerList: {
     paddingBottom: 15,
