@@ -1,5 +1,5 @@
 # time-tracking
-    * Time Tracking application built using React Native *
+    * Time Tracking application built using React Native
     
     ## How to Run the application
         1. Install the Expo mobile app  on your iOS/Android device
